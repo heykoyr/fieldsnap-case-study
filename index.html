@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FieldSnap — Smart Equipment Scanning for Field Engineers</title>
+  <meta name="description" content="FieldSnap lets field engineers photo-scan equipment labels, AI-extract structured data, and save organised reports — all from their phone." />
+  <meta property="og:title" content="FieldSnap — Smart Equipment Scanning" />
+  <meta property="og:description" content="Photo-scan equipment labels. AI-extract structured data. Save organised reports." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.fieldsnap.org" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:   #111111;
+      --white:   #ffffff;
+      --grey1:   #f5f7fa;
+      --grey2:   #e8ecf0;
+      --grey3:   #aaaaaa;
+      --grey4:   #555555;
+      --blue:    #2c5fcc;
+      --bluebg:  #EBF2FF;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--white);
+      color: var(--black);
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    /* ─── NAV ─────────────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--grey2);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      background: var(--black);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .brand-icon svg { display: block; }
+    .brand-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--black);
+      letter-spacing: -0.3px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .nav-link {
+      font-size: 14px;
+      color: var(--grey4);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .nav-link:hover { color: var(--black); }
+    .nav-cta {
+      background: var(--black);
+      color: var(--white) !important;
+      padding: 8px 18px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .nav-cta:hover { background: #333333; }
+
+    /* ─── HERO ────────────────────────────────────────────────── */
+    .hero {
+      text-align: center;
+      padding: 96px 24px 80px;
+      background: var(--white);
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bluebg);
+      border: 1px solid #c7d9f8;
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: 13px;
+      color: var(--blue);
+      font-weight: 600;
+      margin-bottom: 28px;
+    }
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 800;
+      color: var(--black);
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      max-width: 700px;
+      margin: 0 auto 20px;
+    }
+    .hero h1 span { color: var(--grey3); }
+    .hero p {
+      font-size: 18px;
+      color: var(--grey4);
+      max-width: 520px;
+      margin: 0 auto 40px;
+      line-height: 1.65;
+    }
+    .hero-btns {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: var(--black);
+      color: var(--white);
+      padding: 14px 28px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary:hover { background: #333333; }
+    .btn-secondary {
+      background: var(--grey1);
+      color: var(--black);
+      padding: 14px 28px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid var(--grey2);
+    }
+    .btn-secondary:hover { background: var(--grey2); }
+
+    /* ─── PHONE MOCKUP ────────────────────────────────────────── */
+    .phone-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 0 24px 80px;
+    }
+    .phone {
+      width: min(280px, 80vw);
+      background: var(--black);
+      border-radius: 40px;
+      padding: 14px;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.06);
+    }
+    .phone-screen {
+      background: #1a1a1a;
+      border-radius: 28px;
+      overflow: hidden;
+      aspect-ratio: 9/19;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 24px;
+    }
+    .phone-screen-icon {
+      width: 64px;
+      height: 64px;
+      background: #2a2a2a;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .phone-screen-icon svg { display: block; }
+    .phone-screen-label {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      font-weight: 500;
+      text-align: center;
+    }
+    .phone-screen-label strong {
+      display: block;
+      font-size: 16px;
+      color: rgba(255,255,255,0.9);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    /* Simulated scan card */
+    .scan-card {
+      width: 100%;
+      background: #242424;
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .scan-card-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 11px;
+    }
+    .scan-card-row:last-child { border-bottom: none; }
+    .scan-card-key { color: rgba(255,255,255,0.4); }
+    .scan-card-val { color: rgba(255,255,255,0.85); font-weight: 600; }
+    .scan-pill {
+      display: inline-block;
+      background: rgba(50,200,100,0.15);
+      color: #4cd47e;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 100px;
+      border: 1px solid rgba(50,200,100,0.2);
+    }
+
+    /* ─── SECTION WRAPPER ─────────────────────────────────────── */
+    section {
+      padding: 80px 24px;
+    }
+    section.alt { background: var(--grey1); }
+
+    .section-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .section-label {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--blue);
+      background: var(--bluebg);
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(24px, 3.5vw, 36px);
+      font-weight: 800;
+      color: var(--black);
+      letter-spacing: -0.8px;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    .section-sub {
+      font-size: 17px;
+      color: var(--grey4);
+      max-width: 560px;
+      line-height: 1.65;
+      margin-bottom: 48px;
+    }
+
+    /* ─── FEATURES GRID ───────────────────────────────────────── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .feature-card {
+      background: var(--white);
+      border: 1px solid var(--grey2);
+      border-radius: 16px;
+      padding: 28px 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .alt .feature-card { background: var(--white); }
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--bluebg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+    .feature-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 8px;
+    }
+    .feature-card p {
+      font-size: 14px;
+      color: var(--grey4);
+      line-height: 1.65;
+    }
+
+    /* ─── HOW IT WORKS ────────────────────────────────────────── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0;
+      position: relative;
+    }
+    .step {
+      text-align: center;
+      padding: 0 20px;
+      position: relative;
+    }
+    .step-num {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--black);
+      color: var(--white);
+      font-size: 18px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 18px;
+      position: relative;
+      z-index: 1;
+    }
+    .step h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 8px;
+    }
+    .step p {
+      font-size: 14px;
+      color: var(--grey4);
+      line-height: 1.6;
+    }
+
+    /* ─── WHO IT'S FOR ────────────────────────────────────────── */
+    .roles-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .role-chip {
+      background: var(--white);
+      border: 1.5px solid var(--grey2);
+      border-radius: 100px;
+      padding: 10px 20px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--black);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ─── CTA BANNER ──────────────────────────────────────────── */
+    .cta-banner {
+      background: var(--black);
+      border-radius: 20px;
+      padding: 56px 40px;
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .cta-banner h2 {
+      font-size: clamp(24px, 3vw, 32px);
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.6px;
+      margin-bottom: 12px;
+    }
+    .cta-banner p {
+      font-size: 16px;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+    .btn-white {
+      background: var(--white);
+      color: var(--black);
+      padding: 14px 32px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-white:hover { background: #f0f0f0; }
+
+    /* ─── FOOTER ──────────────────────────────────────────────── */
+    footer {
+      background: var(--grey1);
+      border-top: 1px solid var(--grey2);
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      text-decoration: none;
+    }
+    .footer-brand-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--black);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .footer-brand-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--black);
+    }
+    .footer-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .footer-links a {
+      font-size: 14px;
+      color: var(--grey4);
+      text-decoration: none;
+    }
+    .footer-links a:hover { color: var(--black); }
+    .footer-copy {
+      font-size: 13px;
+      color: var(--grey3);
+    }
+
+    /* ─── RESPONSIVE ──────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .hero { padding: 64px 20px 60px; }
+      .hero h1 { letter-spacing: -1px; }
+      .hero p { font-size: 16px; }
+      .nav-links .nav-link:not(.nav-cta) { display: none; }
+      section { padding: 56px 20px; }
+      .cta-banner { padding: 40px 24px; border-radius: 16px; }
+      .steps { gap: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Nav ── -->
+  <nav>
+    <a class="brand" href="/">
+      <div class="brand-icon">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <rect x="1" y="1" width="16" height="4" rx="1.5" fill="#fff"/>
+          <rect x="1" y="7" width="16" height="4" rx="1.5" fill="#fff" opacity=".7"/>
+          <rect x="1" y="13" width="10" height="4" rx="1.5" fill="#fff" opacity=".4"/>
+        </svg>
+      </div>
+      <span class="brand-name">FieldSnap</span>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="#features">Features</a>
+      <a class="nav-link" href="#how-it-works">How it works</a>
+      <a class="nav-link" href="mailto:hello@fieldsnap.org">Contact</a>
+      <a class="nav-link nav-cta" href="#get-app">Get the App</a>
+    </div>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <div class="hero">
+    <div class="hero-badge">⚡ Built for field engineers</div>
+    <h1>Scan equipment.<br/><span>Work smarter.</span></h1>
+    <p>FieldSnap turns your phone into a smart field tool — photograph equipment labels and instantly extract structured data with AI.</p>
+    <div class="hero-btns">
+      <a class="btn-primary" href="#get-app">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M8 1v9M5 7l3 3 3-3M3 13h10" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Download App
+      </a>
+      <a class="btn-secondary" href="#how-it-works">See how it works</a>
+    </div>
+  </div>
+
+  <!-- ── Phone mockup ── -->
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="phone-screen-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect x="2" y="2" width="28" height="7" rx="2.5" fill="#fff"/>
+            <rect x="2" y="12.5" width="28" height="7" rx="2.5" fill="#fff" opacity=".6"/>
+            <rect x="2" y="23" width="18" height="7" rx="2.5" fill="#fff" opacity=".3"/>
+          </svg>
+        </div>
+        <div class="phone-screen-label">
+          <strong>AI Extraction Complete</strong>
+          Motor nameplate detected
+        </div>
+        <div class="scan-card">
+          <div class="scan-card-row">
+            <span class="scan-card-key">Make</span>
+            <span class="scan-card-val">Siemens</span>
+          </div>
+          <div class="scan-card-row">
+            <span class="scan-card-key">Model</span>
+            <span class="scan-card-val">1LE1001</span>
+          </div>
+          <div class="scan-card-row">
+            <span class="scan-card-key">Voltage</span>
+            <span class="scan-card-val">415V</span>
+          </div>
+          <div class="scan-card-row">
+            <span class="scan-card-key">Power</span>
+            <span class="scan-card-val">7.5 kW</span>
+          </div>
+          <div class="scan-card-row">
+            <span class="scan-card-key">Status</span>
+            <span class="scan-pill">Saved</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Features ── -->
+  <section class="alt" id="features">
+    <div class="section-inner">
+      <span class="section-label">Features</span>
+      <h2 class="section-title">Everything you need on-site</h2>
+      <p class="section-sub">From the camera shutter to the final report — FieldSnap handles it all so you can focus on the job.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📷</div>
+          <h3>Smart Photo Scanning</h3>
+          <p>Point your camera at any equipment label. FieldSnap captures the image and sends it to AI for instant analysis.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🤖</div>
+          <h3>AI Data Extraction</h3>
+          <p>Powered by Google Gemini. Automatically reads model numbers, serial numbers, voltage, power ratings and more.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📁</div>
+          <h3>Organised Projects</h3>
+          <p>Group scans into folders and projects. Find any piece of equipment in seconds, even months later.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">☁️</div>
+          <h3>Cloud Sync</h3>
+          <p>All your data syncs securely to the cloud. Access your scans from any device, any time.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <h3>Equipment Templates</h3>
+          <p>25+ equipment templates covering electrical panels, HVAC, motors, power systems and telecom equipment.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔔</div>
+          <h3>Smart Notifications</h3>
+          <p>Get instant alerts when AI extraction completes, syncs finish, or scans are saved successfully.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── How it works ── -->
+  <section id="how-it-works">
+    <div class="section-inner">
+      <span class="section-label">How it works</span>
+      <h2 class="section-title">Three steps to a perfect record</h2>
+      <p class="section-sub">No manual data entry. No spreadsheets. Just point, scan, and save.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Choose a template</h3>
+          <p>Select the equipment type — electrical panel, HVAC unit, motor, or more.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Photograph the label</h3>
+          <p>Take a photo of the equipment nameplate. AI extracts all the key data fields instantly.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Review &amp; save</h3>
+          <p>Confirm the extracted values, add notes if needed, and save to your project folder.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Who it's for ── -->
+  <section class="alt">
+    <div class="section-inner">
+      <span class="section-label">Who it's for</span>
+      <h2 class="section-title">Built for the people on-site</h2>
+      <p class="section-sub">FieldSnap is designed for professionals who work with equipment every day.</p>
+      <div class="roles-grid">
+        <div class="role-chip">⚡ Electricians</div>
+        <div class="role-chip">❄️ HVAC Technicians</div>
+        <div class="role-chip">☀️ Solar Installers</div>
+        <div class="role-chip">🏗️ Facility Engineers</div>
+        <div class="role-chip">⚙️ Maintenance Technicians</div>
+        <div class="role-chip">📡 Telecom Engineers</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section id="get-app">
+    <div class="cta-banner">
+      <h2>Ready to scan smarter?</h2>
+      <p>Download FieldSnap and replace manual data entry with AI-powered scanning on your first job.</p>
+      <a class="btn-white" href="mailto:hello@fieldsnap.org">Request Early Access</a>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <a class="footer-brand" href="/">
+      <div class="footer-brand-icon">
+        <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
+          <rect x="1" y="1" width="16" height="4" rx="1.5" fill="#fff"/>
+          <rect x="1" y="7" width="16" height="4" rx="1.5" fill="#fff" opacity=".7"/>
+          <rect x="1" y="13" width="10" height="4" rx="1.5" fill="#fff" opacity=".4"/>
+        </svg>
+      </div>
+      <span class="footer-brand-name">FieldSnap</span>
+    </a>
+    <div class="footer-links">
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="/privacy">Privacy Policy</a>
+      <a href="mailto:hello@fieldsnap.org">hello@fieldsnap.org</a>
+    </div>
+    <p class="footer-copy">&copy; 2026 FieldSnap. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
