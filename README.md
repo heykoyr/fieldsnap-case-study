@@ -1,13 +1,16 @@
 # FieldSnap — Marketing Website
 
-The public website for [FieldSnap](https://fieldsnap.org) — an AI-powered mobile app for field engineers.
-
-Hosted on GitHub Pages at **[fieldsnap.org](https://fieldsnap.org)**.
+The public marketing site for **[FieldSnap](https://fieldsnap.org)** — an AI-powered field-documentation app for engineers and technicians (live on Google Play). Hand-built, static, and hosted on GitHub Pages at **[fieldsnap.org](https://fieldsnap.org)**.
 
 ---
 
-**Pages**
-- `/` — Main marketing site (index.html)
-- `/privacy` — Privacy policy (privacy/index.html)
+## Pages
+- `/` — marketing home (`index.html`)
+- `/privacy` — privacy policy (`privacy/index.html`)
 
-**App repository** → [github.com/heykoyr/fieldsnap](https://github.com/heykoyr/fieldsnap)
+## Stack
+Hand-written static HTML & CSS — no framework, no build step, so it's fast and trivial to host. Served from GitHub Pages via `CNAME` → `fieldsnap.org`.
+
+---
+
+The app → **[github.com/heykoyr/fieldsnap](https://github.com/heykoyr/fieldsnap)** · Designed and built by **Adekoya Oluwafemi** — a product of **Koyr**.
