@@ -141,7 +141,20 @@ Everything, solo — the product, the taxonomy, the design system, the app, the 
 
 `React Native` · `Expo` · `TypeScript` · `Supabase` (Postgres · Auth · Storage) · `Google Gemini` (Vision) · `RevenueCat` · `Sentry` · `EAS Build`
 
-Source is private. → **[github.com/heykoyr/fieldsnap](https://github.com/heykoyr/fieldsnap)**
+App source is private. → **[github.com/heykoyr/fieldsnap](https://github.com/heykoyr/fieldsnap)**
+
+---
+
+## This repository
+
+Two things live here:
+
+| | |
+|---|---|
+| **The case study** | This README and [`docs/`](docs) — the product, the taxonomy, the architecture and the design system. Read on GitHub. |
+| **The marketing site** | `index.html` and `privacy/` — hand-written static HTML and CSS, no framework and no build step. Served from GitHub Pages at [fieldsnap.org](https://fieldsnap.org). |
+
+The two are kept apart at build time: `_config.yml` excludes the case-study documents from the published site, so the domain serves only the marketing pages.
 
 ---
 

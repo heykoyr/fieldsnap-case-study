@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FieldSnap — Smart Equipment Scanning for Field Engineers</title>
+  <meta name="description" content="FieldSnap lets field engineers photo-scan equipment labels, AI-extract structured data, and save organised reports — all from their phone." />
+  <meta property="og:title" content="FieldSnap — AI-Powered Equipment Documentation" />
+  <meta property="og:description" content="Point. Scan. Done. Replace manual data entry with AI-powered field documentation." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.fieldsnap.org" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:    #0e0e0e;
+      --white:    #ffffff;
+      --grey1:    #f6f8fb;
+      --grey2:    #e8ecf0;
+      --grey3:    #b0b7c3;
+      --grey4:    #5a6172;
+      --blue:     #2563eb;
+      --blue-lt:  #3b82f6;
+      --bluebg:   #eff6ff;
+      --bluebdr:  #bfdbfe;
+      --green:    #16a34a;
+      --greenbg:  #dcfce7;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--white);
+      color: var(--black);
+      line-height: 1.6;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── NAV ─────────────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--grey2);
+      padding: 0 32px;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      background: var(--black);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .brand-icon svg { display: block; }
+    .brand-name {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--black);
+      letter-spacing: -0.4px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-link {
+      font-size: 14px;
+      color: var(--grey4);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 8px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .nav-link:hover { color: var(--black); background: var(--grey1); }
+    .nav-cta {
+      background: var(--black);
+      color: var(--white) !important;
+      padding: 8px 18px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .nav-cta:hover { background: #2a2a2a; }
+
+    /* ─── HERO ────────────────────────────────────────────────── */
+    .hero {
+      text-align: center;
+      padding: 100px 24px 72px;
+      background: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% -10%, #dbeafe 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--greenbg);
+      border: 1px solid #bbf7d0;
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: 13px;
+      color: var(--green);
+      font-weight: 600;
+      margin-bottom: 28px;
+      position: relative;
+    }
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+    .hero h1 {
+      font-size: clamp(36px, 5.5vw, 60px);
+      font-weight: 900;
+      color: var(--black);
+      letter-spacing: -2px;
+      line-height: 1.05;
+      max-width: 720px;
+      margin: 0 auto 22px;
+      position: relative;
+    }
+    .hero h1 .accent {
+      background: linear-gradient(135deg, var(--blue), var(--blue-lt));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 18px;
+      color: var(--grey4);
+      max-width: 500px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+      position: relative;
+    }
+    .hero-btns {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      position: relative;
+      margin-bottom: 56px;
+    }
+    .btn-primary {
+      background: var(--black);
+      color: var(--white);
+      padding: 14px 28px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s, transform 0.15s;
+      font-family: inherit;
+    }
+    .btn-primary:hover { background: #1a1a1a; transform: translateY(-1px); }
+    .btn-secondary {
+      background: var(--white);
+      color: var(--black);
+      padding: 14px 28px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1.5px solid var(--grey2);
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .btn-secondary:hover { background: var(--grey1); border-color: var(--grey3); }
+
+    /* ─── STATS BAR ───────────────────────────────────────────── */
+    .stats-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      position: relative;
+      max-width: 560px;
+      margin: 0 auto;
+      background: var(--grey1);
+      border: 1px solid var(--grey2);
+      border-radius: 16px;
+      padding: 0;
+      overflow: hidden;
+    }
+    .stat-item {
+      flex: 1;
+      text-align: center;
+      padding: 16px 12px;
+    }
+    .stat-item + .stat-item {
+      border-left: 1px solid var(--grey2);
+    }
+    .stat-num {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--black);
+      letter-spacing: -0.5px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--grey3);
+      font-weight: 500;
+    }
+
+    /* ─── PHONE WRAP ──────────────────────────────────────────── */
+    .phones-section {
+      background: var(--grey1);
+      border-top: 1px solid var(--grey2);
+      border-bottom: 1px solid var(--grey2);
+      padding: 64px 24px;
+      overflow: hidden;
+    }
+    .phones-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .phones-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--grey3);
+      margin-bottom: 40px;
+    }
+    .phones-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 16px;
+    }
+    .phone {
+      background: var(--black);
+      border-radius: 36px;
+      padding: 12px;
+      box-shadow: 0 32px 64px rgba(0,0,0,0.16), 0 0 0 1px rgba(255,255,255,0.08) inset;
+      flex-shrink: 0;
+    }
+    .phone.main {
+      width: min(240px, 60vw);
+    }
+    .phone.side {
+      width: min(190px, 48vw);
+      opacity: 0.7;
+      filter: blur(0.5px);
+    }
+    .phone-screen {
+      border-radius: 25px;
+      overflow: hidden;
+      aspect-ratio: 9/19;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 14px;
+      gap: 10px;
+    }
+    /* Main screen — scan result */
+    .screen-main { background: #141414; }
+    .screen-top {
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 2px;
+    }
+    .screen-heading {
+      font-size: 16px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.3px;
+      margin-bottom: 2px;
+    }
+    .screen-sub {
+      font-size: 11px;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 12px;
+    }
+    .screen-card {
+      background: #1e1e1e;
+      border-radius: 12px;
+      padding: 10px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .screen-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 10px;
+    }
+    .screen-row:last-child { border-bottom: none; }
+    .screen-key { color: rgba(255,255,255,0.38); }
+    .screen-val { color: rgba(255,255,255,0.9); font-weight: 700; }
+    .screen-pill {
+      display: inline-block;
+      background: rgba(22, 163, 74, 0.18);
+      color: #4ade80;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 100px;
+      border: 1px solid rgba(22, 163, 74, 0.25);
+    }
+    .screen-save-btn {
+      margin-top: 10px;
+      background: #2563eb;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      font-size: 11px;
+      color: #fff;
+      font-weight: 700;
+    }
+    /* Side screen — folders */
+    .screen-side { background: #0f0f0f; }
+    .side-header {
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .side-folder {
+      background: #1a1a1a;
+      border-radius: 10px;
+      padding: 9px 10px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .side-folder-icon {
+      width: 28px;
+      height: 28px;
+      background: #252525;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+    }
+    .side-folder-info { flex: 1; }
+    .side-folder-name {
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.9);
+    }
+    .side-folder-count {
+      font-size: 9px;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ─── SECTION WRAPPER ─────────────────────────────────────── */
+    section {
+      padding: 88px 24px;
+    }
+    section.alt { background: var(--grey1); }
+
+    .section-inner {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    .section-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--blue);
+      background: var(--bluebg);
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+      border: 1px solid var(--bluebdr);
+    }
+    .section-title {
+      font-size: clamp(26px, 3.5vw, 38px);
+      font-weight: 800;
+      color: var(--black);
+      letter-spacing: -1px;
+      line-height: 1.12;
+      margin-bottom: 14px;
+    }
+    .section-sub {
+      font-size: 17px;
+      color: var(--grey4);
+      max-width: 540px;
+      line-height: 1.7;
+      margin-bottom: 52px;
+    }
+
+    /* ─── FEATURES GRID ───────────────────────────────────────── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .feature-card {
+      background: var(--white);
+      border: 1.5px solid var(--grey2);
+      border-radius: 18px;
+      padding: 28px 24px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .feature-card:hover {
+      border-color: var(--grey3);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--bluebg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 16px;
+      border: 1px solid var(--bluebdr);
+    }
+    .feature-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 8px;
+      letter-spacing: -0.2px;
+    }
+    .feature-card p {
+      font-size: 14px;
+      color: var(--grey4);
+      line-height: 1.65;
+    }
+
+    /* ─── HOW IT WORKS ────────────────────────────────────────── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 32px;
+    }
+    .step {
+      position: relative;
+    }
+    .step-num {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--black);
+      color: var(--white);
+      font-size: 16px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .step h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 8px;
+      letter-spacing: -0.2px;
+    }
+    .step p {
+      font-size: 14px;
+      color: var(--grey4);
+      line-height: 1.65;
+    }
+
+    /* ─── WHO IT'S FOR ────────────────────────────────────────── */
+    .roles-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .role-chip {
+      background: var(--white);
+      border: 1.5px solid var(--grey2);
+      border-radius: 12px;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--black);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .role-chip:hover {
+      border-color: var(--grey3);
+      background: var(--grey1);
+    }
+
+    /* ─── GET THE APP ─────────────────────────────────────────── */
+    .get-app-section {
+      background: var(--black);
+      padding: 80px 24px;
+    }
+    .get-app-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .get-app-inner h2 {
+      font-size: clamp(28px, 3.5vw, 40px);
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -1px;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+    .get-app-inner p {
+      font-size: 16px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 40px;
+      line-height: 1.7;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .store-badges {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .store-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.08);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 12px 24px;
+      text-decoration: none;
+      color: var(--white);
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .store-badge:hover {
+      background: rgba(255,255,255,0.14);
+      border-color: rgba(255,255,255,0.22);
+    }
+    .store-badge-icon {
+      font-size: 22px;
+      line-height: 1;
+    }
+    .store-badge-text {
+      text-align: left;
+    }
+    .store-badge-sub {
+      font-size: 10px;
+      color: rgba(255,255,255,0.5);
+      font-weight: 500;
+      display: block;
+      margin-bottom: 1px;
+    }
+    .store-badge-name {
+      font-size: 16px;
+      font-weight: 700;
+      display: block;
+    }
+    .get-app-note {
+      font-size: 13px;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ─── FOOTER ──────────────────────────────────────────────── */
+    footer {
+      background: #080808;
+      border-top: 1px solid #1a1a1a;
+      padding: 44px 24px;
+    }
+    .footer-inner {
+      max-width: 980px;
+      margin: 0 auto;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 32px;
+    }
+    .footer-left {}
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      margin-bottom: 10px;
+    }
+    .footer-brand-icon {
+      width: 28px;
+      height: 28px;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .footer-brand-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+    .footer-tagline {
+      font-size: 13px;
+      color: #444;
+      margin-bottom: 16px;
+    }
+    .footer-copy {
+      font-size: 12px;
+      color: #333;
+    }
+    .footer-right {
+      display: flex;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+    .footer-col {}
+    .footer-col-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #333;
+      margin-bottom: 12px;
+    }
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .footer-links a {
+      font-size: 14px;
+      color: #555;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .footer-links a:hover { color: #aaa; }
+
+    /* ─── RESPONSIVE ──────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      nav { padding: 0 20px; }
+      .hero { padding: 72px 20px 56px; }
+      .hero h1 { letter-spacing: -1.2px; }
+      .hero p { font-size: 16px; }
+      .nav-links .nav-link:not(.nav-cta) { display: none; }
+      section { padding: 64px 20px; }
+      .phones-row .phone.side { display: none; }
+      .footer-inner { flex-direction: column; gap: 24px; }
+      .footer-right { gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Nav ── -->
+  <nav>
+    <a class="brand" href="/">
+      <div class="brand-icon">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <rect x="1" y="1" width="16" height="4" rx="1.5" fill="#fff"/>
+          <rect x="1" y="7" width="16" height="4" rx="1.5" fill="#fff" opacity=".7"/>
+          <rect x="1" y="13" width="10" height="4" rx="1.5" fill="#fff" opacity=".4"/>
+        </svg>
+      </div>
+      <span class="brand-name">FieldSnap</span>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="#features">Features</a>
+      <a class="nav-link" href="#how-it-works">How it works</a>
+      <a class="nav-link" href="mailto:hello@fieldsnap.org">Contact</a>
+      <a class="nav-link nav-cta" href="#get-app">Get the App</a>
+    </div>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <div class="hero">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Now available on Android
+    </div>
+    <h1>Document equipment<br/><span class="accent">10× faster.</span></h1>
+    <p>FieldSnap turns your phone into a smart field tool. Photograph any equipment label — AI reads it instantly and saves a structured record.</p>
+    <div class="hero-btns">
+      <a class="btn-primary" href="#get-app">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M8 1v9M5 7l3 3 3-3M3 13h10" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Download App
+      </a>
+      <a class="btn-secondary" href="#how-it-works">See how it works →</a>
+    </div>
+
+    <!-- Stats bar -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-num">25+</div>
+        <div class="stat-label">Equipment types</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">AI</div>
+        <div class="stat-label">Data extraction</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">0</div>
+        <div class="stat-label">Manual entry</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Phone mockups ── -->
+  <div class="phones-section">
+    <div class="phones-inner">
+      <div class="phones-label">App Preview</div>
+      <div class="phones-row">
+
+        <!-- Side: Folders view -->
+        <div class="phone side">
+          <div class="phone-screen screen-side">
+            <div class="side-header">My Projects</div>
+            <div class="side-folder">
+              <div class="side-folder-icon">🏭</div>
+              <div class="side-folder-info">
+                <div class="side-folder-name">Refinery Site A</div>
+                <div class="side-folder-count">14 scans</div>
+              </div>
+            </div>
+            <div class="side-folder">
+              <div class="side-folder-icon">⚡</div>
+              <div class="side-folder-info">
+                <div class="side-folder-name">Substation Survey</div>
+                <div class="side-folder-count">31 scans</div>
+              </div>
+            </div>
+            <div class="side-folder">
+              <div class="side-folder-icon">❄️</div>
+              <div class="side-folder-info">
+                <div class="side-folder-name">HVAC Audit — Q1</div>
+                <div class="side-folder-count">8 scans</div>
+              </div>
+            </div>
+            <div class="side-folder">
+              <div class="side-folder-icon">☀️</div>
+              <div class="side-folder-info">
+                <div class="side-folder-name">Solar Farm Install</div>
+                <div class="side-folder-count">22 scans</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main: Scan result -->
+        <div class="phone main">
+          <div class="phone-screen screen-main">
+            <div class="screen-top">AI Extraction</div>
+            <div class="screen-heading">Scan Complete</div>
+            <div class="screen-sub">Motor nameplate detected</div>
+            <div class="screen-card">
+              <div class="screen-row">
+                <span class="screen-key">Make</span>
+                <span class="screen-val">Siemens</span>
+              </div>
+              <div class="screen-row">
+                <span class="screen-key">Model</span>
+                <span class="screen-val">1LE1001-1AA</span>
+              </div>
+              <div class="screen-row">
+                <span class="screen-key">Serial</span>
+                <span class="screen-val">SN-48291X</span>
+              </div>
+              <div class="screen-row">
+                <span class="screen-key">Voltage</span>
+                <span class="screen-val">415V / 50Hz</span>
+              </div>
+              <div class="screen-row">
+                <span class="screen-key">Power</span>
+                <span class="screen-val">7.5 kW</span>
+              </div>
+              <div class="screen-row">
+                <span class="screen-key">Efficiency</span>
+                <span class="screen-val">IE3</span>
+              </div>
+              <div class="screen-row">
+                <span class="screen-key">Status</span>
+                <span class="screen-pill">Saved</span>
+              </div>
+            </div>
+            <div class="screen-save-btn">Save to Project →</div>
+          </div>
+        </div>
+
+        <!-- Side: Templates -->
+        <div class="phone side" style="align-self:flex-start;">
+          <div class="phone-screen screen-side">
+            <div class="side-header">Templates</div>
+            <div class="side-folder">
+              <div class="side-folder-icon">⚡</div>
+              <div class="side-folder-info">
+                <div class="side-folder-name">Electrical Panel</div>
+                <div class="side-folder-count">12 fields</div>
+              </div>
+            </div>
+            <div class="side-folder">
+              <div class="side-folder-icon">⚙️</div>
+              <div class="side-folder-info">
+                <div class="side-folder-name">Electric Motor</div>
+                <div class="side-folder-count">14 fields</div>
+              </div>
+            </div>
+            <div class="side-folder">
+              <div class="side-folder-icon">❄️</div>
+              <div class="side-folder-info">
+                <div class="side-folder-name">HVAC Unit</div>
+                <div class="side-folder-count">11 fields</div>
+              </div>
+            </div>
+            <div class="side-folder">
+              <div class="side-folder-icon">☀️</div>
+              <div class="side-folder-info">
+                <div class="side-folder-name">Solar Inverter</div>
+                <div class="side-folder-count">10 fields</div>
+              </div>
+            </div>
+            <div class="side-folder">
+              <div class="side-folder-icon">📡</div>
+              <div class="side-folder-info">
+                <div class="side-folder-name">Telecom Rack</div>
+                <div class="side-folder-count">9 fields</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Features ── -->
+  <section id="features">
+    <div class="section-inner">
+      <span class="section-label">Features</span>
+      <h2 class="section-title">Everything you need on-site</h2>
+      <p class="section-sub">From the camera shutter to the final report — FieldSnap handles it all so you can focus on the job.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📷</div>
+          <h3>Smart Photo Scanning</h3>
+          <p>Point your camera at any equipment label. FieldSnap captures the image and sends it to AI for instant, accurate analysis.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🤖</div>
+          <h3>AI Data Extraction</h3>
+          <p>Powered by Google Gemini. Automatically reads model numbers, serial numbers, voltage, power ratings and more — in seconds.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📁</div>
+          <h3>Organised Projects</h3>
+          <p>Group scans into folders by site, client, or date. Find any piece of equipment in seconds, even months later.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">☁️</div>
+          <h3>Cloud Sync</h3>
+          <p>All your data syncs securely to the cloud automatically. Access your scans from any device, any time.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <h3>25+ Equipment Templates</h3>
+          <p>Pre-built templates for electrical panels, HVAC, motors, solar inverters, power systems, telecom equipment and more.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📄</div>
+          <h3>PDF Report Export</h3>
+          <p>Generate clean, professional PDF reports from any folder. Share directly with clients or attach to job tickets.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔗</div>
+          <h3>Shareable Links</h3>
+          <p>Share individual scans or entire project folders via a link — no app needed for the recipient to view.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔔</div>
+          <h3>Smart Notifications</h3>
+          <p>Instant alerts when AI extraction completes, syncs finish, or scans are saved — so you always know where things stand.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── How it works ── -->
+  <section class="alt" id="how-it-works">
+    <div class="section-inner">
+      <span class="section-label">How it works</span>
+      <h2 class="section-title">Three steps to a perfect record</h2>
+      <p class="section-sub">No manual data entry. No spreadsheets. No rekeying data at the office. Just point, scan, and save.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Choose a template</h3>
+          <p>Select the equipment type — electrical panel, HVAC unit, motor, solar inverter, or one of 20+ more templates.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Photograph the label</h3>
+          <p>Take a photo of the equipment nameplate. AI reads all the key data fields instantly — no manual typing needed.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Review &amp; save</h3>
+          <p>Confirm the extracted values, add notes if needed, and save to your project folder. Done in under 30 seconds.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <h3>Export &amp; share</h3>
+          <p>Generate a PDF report or share a link to any folder. Your data, your format, ready when the job is done.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Who it's for ── -->
+  <section>
+    <div class="section-inner">
+      <span class="section-label">Who it's for</span>
+      <h2 class="section-title">Built for the people on-site</h2>
+      <p class="section-sub">FieldSnap is designed for professionals who work with equipment every day and need accurate records without the paperwork.</p>
+      <div class="roles-grid">
+        <div class="role-chip">⚡ Electricians</div>
+        <div class="role-chip">❄️ HVAC Technicians</div>
+        <div class="role-chip">☀️ Solar Installers</div>
+        <div class="role-chip">🏗️ Facility Engineers</div>
+        <div class="role-chip">⚙️ Maintenance Technicians</div>
+        <div class="role-chip">📡 Telecom Engineers</div>
+        <div class="role-chip">🔋 Power Systems Engineers</div>
+        <div class="role-chip">🏭 Commissioning Engineers</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Get the app ── -->
+  <div class="get-app-section" id="get-app">
+    <div class="get-app-inner">
+      <h2>Ready to scan smarter?</h2>
+      <p>Download FieldSnap and replace manual data entry with AI-powered documentation on your next job.</p>
+      <div class="store-badges">
+        <a class="store-badge" href="https://play.google.com/store/apps/details?id=com.koyr.fieldsnap" target="_blank" rel="noopener">
+          <span class="store-badge-icon">▶</span>
+          <span class="store-badge-text">
+            <span class="store-badge-sub">Get it on</span>
+            <span class="store-badge-name">Google Play</span>
+          </span>
+        </a>
+        <a class="store-badge" href="mailto:hello@fieldsnap.org">
+          <span class="store-badge-icon">✉</span>
+          <span class="store-badge-text">
+            <span class="store-badge-sub">iOS coming soon —</span>
+            <span class="store-badge-name">Join Waitlist</span>
+          </span>
+        </a>
+      </div>
+      <div class="get-app-note">Free to download · No credit card required · Works offline</div>
+    </div>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-left">
+        <a class="footer-brand" href="/">
+          <div class="footer-brand-icon">
+            <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
+              <rect x="1" y="1" width="16" height="4" rx="1.5" fill="#fff"/>
+              <rect x="1" y="7" width="16" height="4" rx="1.5" fill="#fff" opacity=".7"/>
+              <rect x="1" y="13" width="10" height="4" rx="1.5" fill="#fff" opacity=".4"/>
+            </svg>
+          </div>
+          <span class="footer-brand-name">FieldSnap</span>
+        </a>
+        <div class="footer-tagline">AI-powered equipment documentation.</div>
+        <div class="footer-copy">&copy; 2026 FieldSnap. All rights reserved.</div>
+      </div>
+      <div class="footer-right">
+        <div class="footer-col">
+          <div class="footer-col-label">Product</div>
+          <div class="footer-links">
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How it works</a>
+            <a href="#get-app">Download</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-label">Company</div>
+          <div class="footer-links">
+            <a href="/privacy">Privacy Policy</a>
+            <a href="mailto:hello@fieldsnap.org">Contact</a>
+            <a href="mailto:hello@fieldsnap.org">hello@fieldsnap.org</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

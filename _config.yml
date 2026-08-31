@@ -1,0 +1,18 @@
+# GitHub Pages build config.
+#
+# This repository holds two things: the FieldSnap case study (README +
+# docs/, read on GitHub) and the marketing site (index.html + privacy/,
+# served at fieldsnap.org). Only the second should be published.
+#
+# Everything below is excluded from the built site so the case-study
+# documents are not served as raw Markdown under the domain.
+
+# The marketing pages are self-contained — no local asset references —
+# so assets/ is only used by the README on GitHub and is not published.
+
+exclude:
+  - README.md
+  - CLAUDE.md
+  - docs
+  - assets
+  - .gitignore
