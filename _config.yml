@@ -12,7 +12,6 @@
 
 exclude:
   - README.md
-  - CLAUDE.md
   - docs
   - assets
   - .gitignore
