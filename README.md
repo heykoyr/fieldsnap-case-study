@@ -51,7 +51,7 @@ So extraction is never open-ended. You choose the equipment type first, and that
 | **Telecom / Data** | 4 | Rack units · port count · switching capacity |
 | **Others** | 3 | Zone count · floors served · car capacity |
 
-**28 equipment types · 179 typed fields · 6 categories.** Every field carries a real placeholder — `e.g. 480V`, `e.g. Square D`, `e.g. 750 KVA` — rather than a generic hint, because the placeholder is what tells a technician which of the four numbers on a nameplate belongs in that box. Fields are typed `text`, `number`, `date` or `select`; in practice nameplate values are strings, so the current taxonomy is 173 text, 5 number, 1 date, and one closed-domain `select` (elevator drive type: Traction, Hydraulic, MRL, Pneumatic).
+**28 equipment types · 179 typed fields · 6 categories.** Every field carries a real placeholder — `e.g. 480V`, `e.g. Square D`, `e.g. 750 KVA` — rather than a generic hint, because the placeholder is what tells a technician which of the four numbers on a nameplate belongs in that box. Fields use `text`, `number`, `date` or `select` types. Most nameplate values are strings; elevator drive type is an example of a closed-domain `select` (Traction, Hydraulic, MRL, Pneumatic). See the linked taxonomy for the field inventory.
 
 The taxonomy came from desk research: manufacturer nameplate documentation and trade forums where electricians, HVAC techs and facilities engineers argue about what actually needs recording. It is the part of the product that is hardest to copy, and the part a general-purpose "scan anything" tool gets wrong.
 
